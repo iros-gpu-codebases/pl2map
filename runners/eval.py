@@ -12,7 +12,7 @@ def parse_config():
     arg_parser.add_argument('-d', '--dataset_dir', type=Path, default='train_test_datasets/imgs_datasets/', help='')
     arg_parser.add_argument('--sfm_dir', type=Path, default='train_test_datasets/gt_3Dmodels/', help='sfm ground truth directory')
     arg_parser.add_argument('--dataset', type=str, default="7scenes", help='dataset name')
-    arg_parser.add_argument('-s', '--scene', type=str, default="pumpkin", help='scene name(s)')
+    arg_parser.add_argument('-s', '--scene', type=str, default="fire", help='scene name(s)')
     arg_parser.add_argument('-c','--cudaid', type=int, default=0, help='specify cuda device id')
     arg_parser.add_argument('-o','--outputs', type=Path, default='logs/',
                         help='Path to the output directory, default: %(default)s')

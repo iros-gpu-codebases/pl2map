@@ -24,6 +24,7 @@ class DeepLSDDetector(LineBaseDetector):
             ckpt = os.path.join(self.weight_path, "line2d", "DeepLSD", 'deeplsd_md.tar')
         if not os.path.isfile(ckpt):
             self.download_model(ckpt)
+        print(ckpt)
         ckpt = torch.load(ckpt, map_location='cpu')
         print('Loaded DeepLSD model')
         self.net = DeepLSD(conf).eval()
@@ -34,7 +35,7 @@ class DeepLSDDetector(LineBaseDetector):
         import subprocess
         if not os.path.exists(os.path.dirname(path)):
             os.makedirs(os.path.dirname(path))
-        link = "https://www.polybox.ethz.ch/index.php/s/XVb30sUyuJttFys/download"
+        link = "https://cvg-data.inf.ethz.ch/DeepLSD/deeplsd_md.tar"
         cmd = ["wget", link, "-O", path]
         print("Downloading DeepLSD model...")
         subprocess.run(cmd, check=True)
