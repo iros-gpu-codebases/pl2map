@@ -12,6 +12,8 @@ from trainer import step_fwd, ShowLosses
 from util.pose_estimator import Pose_Estimator # require limap library
 from util.io import SAVING_MAP
 
+import nvtx
+
 class Evaluator():
     default_cfg = {
         "eval_train": True, # evaluate train_loader
@@ -82,14 +84,21 @@ class Evaluator():
                 i = 0
                 print("[INFO] Evaluating test_loader ...")
                 for _, (data, target) in enumerate(tqdm(self.eval_loader)):
-                    _, output = step_fwd(self.pipeline, self.device, data, 
-                                        target, train=False)
-                    if self.eval_cfg.save_3dmap: self.saving_map.save(output, data)
-                    # if data['imgname'][0] == self.vis_infor_test.highlight_frame:
-                    pose_vis_infor = self.pose_estimator.run(output, data, target, mode='test')
-                    self.vis_infor_test.update(output, data, pose_vis_infor)
-                    # i += 1
-                    # if i > 20: break
+                    with nvtx.annotate(f"sample_{i}", color="green"):
+                        with nvtx.annotate("step_fwd", color="blue"):
+                            _, output = step_fwd(self.pipeline, self.device, data, target, train=False)
+                        
+                        if self.eval_cfg.save_3dmap: self.saving_map.save(output, data)
+                        # if data['imgname'][0] == self.vis_infor_test.highlight_frame:
+                        
+                        with nvtx.annotate("pose_estimator", color="blue"):
+                            pose_vis_infor = self.pose_estimator.run(output, data, target, mode='test')
+                        
+                        with nvtx.annotate("vis_infor_update", color="blue"):
+                            self.vis_infor_test.update(output, data, pose_vis_infor)
+                        
+                        i += 1
+                        if i > 60: break
                 self.vis_infor_test.vis()
         else:
             print("[INFO] Skip evaluating and use the existing results")

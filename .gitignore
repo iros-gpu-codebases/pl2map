@@ -27,3 +27,4 @@ train_test_datasets_origin/
 *.so
 
 .vscode
+*.nsys-rep
